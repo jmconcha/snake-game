@@ -2,7 +2,7 @@ import { updateSnake, drawSnake, setSnakeDirection } from './snake.js';
 
 // how many render per second
 // this will be the snake speed
-const renderPerSec = 2;
+const renderPerSec = 10;
 // last render timestamp
 let lastRenderTime = 0;
 
