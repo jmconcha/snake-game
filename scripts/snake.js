@@ -9,17 +9,35 @@ const snakeBody = [
 ];
 
 // width and height of snake segments/parts
-export const snakeSegmentSize = {
+const snakeSegmentSize = {
   width: 20,
   height: 20,
 };
 
+// snake direction
+// snake previous direction
+let snakePrevDirection = null;
+// snake current direction
+let snakeCurrDirection = null;
+
 // update all snake data
 export function updateSnake() {
-  snakeBody[0].x += 20;
+  switch (snakeCurrDirection) {
+    case 'right':
+      snakeBody[0].x += snakeSegmentSize.width;
+      break;
+    case 'left':
+      snakeBody[0].x -= snakeSegmentSize.width;
+      break;
+    case 'up':
+      snakeBody[0].y -= snakeSegmentSize.height;
+      break;
+    case 'down':
+      snakeBody[0].y += snakeSegmentSize.height;
+      break;
+  }
 }
 
-// draw snake in HTML Canvas
 export function drawSnake() {
   // clear canvas to erase previous paint
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -30,4 +48,17 @@ export function drawSnake() {
     snakeSegmentSize.width,
     snakeSegmentSize.height
   );
+}
+
+export function setSnakeDirection(direction) {
+  if (
+    (snakeCurrDirection === 'right' && direction === 'left') ||
+    (snakeCurrDirection === 'left' && direction === 'right') ||
+    (snakeCurrDirection === 'up' && direction === 'down') ||
+    (snakeCurrDirection === 'down' && direction === 'up')
+  )
+    return;
+
+  snakePrevDirection = snakeCurrDirection;
+  snakeCurrDirection = direction;
 }

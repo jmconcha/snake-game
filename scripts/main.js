@@ -1,4 +1,4 @@
-import { updateSnake, drawSnake } from './snake.js';
+import { updateSnake, drawSnake, setSnakeDirection } from './snake.js';
 
 // how many render per second
 // this will be the snake speed
@@ -27,5 +27,11 @@ function main(currentTime) {
 
   lastRenderTime = currentTime;
 }
+
+// watch for UP, DOWN, LEFT, and RIGHT arrow key press
+window.addEventListener('keydown', function (e) {
+  const direction = e.key.replace('Arrow', '').toLowerCase();
+  setSnakeDirection(direction);
+});
 
 main();
