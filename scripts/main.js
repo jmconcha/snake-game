@@ -1,8 +1,18 @@
+import { updateSnake, drawSnake } from './snake.js';
+
 // how many render per second
 // this will be the snake speed
 const renderPerSec = 2;
 // last render timestamp
 let lastRenderTime = 0;
+
+function update() {
+  updateSnake();
+}
+
+function draw() {
+  drawSnake();
+}
 
 function main(currentTime) {
   window.requestAnimationFrame(main);
@@ -12,7 +22,9 @@ function main(currentTime) {
   // controls how many render per sec
   if (lastRenderMS < 1 / renderPerSec) return;
 
-  console.log(currentTime);
+  update();
+  draw();
+
   lastRenderTime = currentTime;
 }
 
