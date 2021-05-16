@@ -6,6 +6,8 @@ const renderPerSec = 10;
 // last render timestamp
 let lastRenderTime = 0;
 
+let restart = null;
+
 function update() {
   updateSnake();
 }
