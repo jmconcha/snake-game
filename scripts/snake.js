@@ -75,7 +75,13 @@ function Snake() {
 
   // check if snake head intersected to the boundaries
   this.isBoundaryIntersected = function () {
-    return false;
+    // snake[0] is the snake's head
+    return (
+      this.snakeBody[0].x < 0 ||
+      this.snakeBody[0].x > canvasWidth ||
+      this.snakeBody[0].y < 0 ||
+      this.snakeBody[0].y > canvasHeight
+    );
   };
 
   // update snake direction

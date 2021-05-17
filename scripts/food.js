@@ -2,9 +2,10 @@ function Food() {
   // food color
   this.color = '#ffff00';
 
-  // food x, y position, width, and height
+  // food x, and y position
   this.x = 100;
   this.y = 100;
+  // food width, and height
   this.width = 20;
   this.height = 20;
 
