@@ -22,14 +22,8 @@ function Snake() {
     y: 0,
   };
 
-  // game over flag variable
-  this.isGameOver = false;
-
   // update all snake data
   this.updateSnake = function () {
-    // checks if player is game over
-    this.onGameOver();
-
     // checks if snake ate the food
     this.onSnakeEat();
 
@@ -59,10 +53,10 @@ function Snake() {
     });
   };
 
-  // checks if the game is over
-  // updates isGameOver flag variable
-  this.onGameOver = function () {
-    this.isGameOver = this.isSnakeIntersected() || this.isBoundaryIntersected();
+  // checks if snake intersected on its own body or on the boundaries
+  // which means snake is dead and the game is over
+  this.isDead = function () {
+    return this.isSnakeIntersected() || this.isBoundaryIntersected();
   };
 
   // check if snake head intersected to its body
@@ -146,7 +140,7 @@ function Snake() {
       newSegment.y = lastSnakeSegment.y;
     } else if (this.snakeDirection.y < 0) {
       newSegment.x = lastSnakeSegment.x;
-      newSegment.y = lastSnakeSegment.y - this.snakeSegmentSize.height;
+      newSegment.y = lastSnakeSegment.y + this.snakeSegmentSize.height;
     }
 
     this.snakeBody.push(newSegment);

@@ -8,8 +8,19 @@ let lastRenderTime = 0;
 const snake = new Snake();
 const food = new Food();
 
+function isGameOver() {
+  return snake.isDead();
+}
+
 function main(currentTime) {
-  window.requestAnimationFrame(main);
+  // checks if player is game over
+  if (!isGameOver()) {
+    // continue the game
+    window.requestAnimationFrame(main);
+  } else {
+    // stop the game, stop drawing on the canvas
+    console.log('game over');
+  }
 
   // milliseconds since last render
   let lastRenderMS = (currentTime - lastRenderTime) / 1000;
