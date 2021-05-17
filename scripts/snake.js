@@ -1,167 +1,167 @@
-import { ctx, canvasWidth, canvasHeight } from './canvas.js';
-import { food, generateFood } from './food.js';
+function Snake() {
+  // snake color
+  this.color = '#fff';
 
-// body of snake compose of segments
-export const snakeBody = [
-  {
-    x: 180,
-    y: 180,
-  },
-];
+  // body of snake compose of segments
+  this.snakeBody = [
+    {
+      x: 180,
+      y: 180,
+    },
+  ];
 
-// width and height of snake segments/parts
-const snakeSegmentSize = {
-  width: 20,
-  height: 20,
-};
+  // width and height of snake segments/parts
+  this.snakeSegmentSize = {
+    width: 20,
+    height: 20,
+  };
 
-// snake direction
-const snakeDirection = {
-  x: 0,
-  y: 0,
-};
+  // snake direction
+  this.snakeDirection = {
+    x: 0,
+    y: 0,
+  };
 
-// update all snake data
-export function updateSnake() {
-  // checks if player is game over
-  if (onGameOver()) {
-    console.log('gameover');
-  }
+  // game over flag variable
+  this.isGameOver = false;
+
+  // update all snake data
+  this.updateSnake = function () {
+    // checks if player is game over
+    this.onGameOver();
+
+    // checks if snake ate the food
+    this.onSnakeEat();
+
+    for (let i = this.snakeBody.length - 1; i > 0; i--) {
+      this.snakeBody[i] = { ...this.snakeBody[i - 1] };
+    }
+
+    // update snake position
+    this.snakeBody[0].x += this.snakeDirection.x;
+    this.snakeBody[0].y += this.snakeDirection.y;
+  };
+
+  // draw snake and food on the screen
+  this.drawSnake = function () {
+    // doesn't draw if game over
+    if (this.isGameOver) alert('gameover');
+
+    // draw snake
+    ctx.fillStyle = this.color;
+    this.snakeBody.forEach((segment) => {
+      ctx.fillRect(
+        segment.x,
+        segment.y,
+        this.snakeSegmentSize.width,
+        this.snakeSegmentSize.height
+      );
+    });
+  };
+
+  // checks if the game is over
+  // updates isGameOver flag variable
+  this.onGameOver = function () {
+    this.isGameOver = this.isSnakeIntersected() || this.isBoundaryIntersected();
+  };
+
+  // check if snake head intersected to its body
+  this.isSnakeIntersected = function () {
+    return this.snakeBody.some((segment, idx) => {
+      if (idx !== 0) {
+        // snakeBody[0] is snake's head
+        if (
+          segment.x === this.snakeBody[0].x &&
+          segment.y === this.snakeBody[0].y
+        )
+          return true;
+      }
+    });
+  };
+
+  // check if snake head intersected to the boundaries
+  this.isBoundaryIntersected = function () {
+    return false;
+  };
+
+  // update snake direction
+  this.setSnakeDirection = function (direction) {
+    if (
+      direction !== 'right' &&
+      direction !== 'left' &&
+      direction !== 'up' &&
+      direction !== 'down'
+    )
+      return;
+
+    // update snakeDirection
+    switch (direction) {
+      case 'right':
+        if (this.snakeDirection.x !== -this.snakeSegmentSize.width) {
+          this.snakeDirection.x = this.snakeSegmentSize.width;
+          this.snakeDirection.y = 0;
+        }
+        break;
+      case 'left':
+        if (this.snakeDirection.x !== this.snakeSegmentSize.width) {
+          this.snakeDirection.x = -this.snakeSegmentSize.width;
+          this.snakeDirection.y = 0;
+        }
+        break;
+      case 'up':
+        if (this.snakeDirection.y !== this.snakeSegmentSize.height) {
+          this.snakeDirection.y = -this.snakeSegmentSize.height;
+          this.snakeDirection.x = 0;
+        }
+        break;
+      case 'down':
+        if (this.snakeDirection.y !== -this.snakeSegmentSize.height) {
+          this.snakeDirection.y = this.snakeSegmentSize.height;
+          this.snakeDirection.x = 0;
+        }
+        break;
+      default:
+        return undefined;
+    }
+  };
+
+  // returns snake last segment or the tail of the snake
+  this.getLastSnakeSegment = function () {
+    return this.snakeBody[this.snakeBody.length - 1];
+  };
+
+  this.addSnakeSegment = function () {
+    // get last snake segment to know x position and y position
+    const lastSnakeSegment = this.getLastSnakeSegment();
+    const newSegment = {};
+
+    if (this.snakeDirection.x > 0) {
+      newSegment.x = lastSnakeSegment.x - this.snakeSegmentSize.width;
+      newSegment.y = this.snakeSegmentSize.y;
+    } else if (this.snakeDirection.x < 0) {
+      newSegment.x = lastSnakeSegment.x;
+      newSegment.y = this.snakeSegmentSize.y;
+    } else if (this.snakeDirection.y > 0) {
+      newSegment.x = this.snakeSegmentSize.x;
+      newSegment.y = lastSnakeSegment.y;
+    } else if (this.snakeDirection.y < 0) {
+      newSegment.x = lastSnakeSegment.x;
+      newSegment.y = lastSnakeSegment.y - this.snakeSegmentSize.height;
+    }
+
+    this.snakeBody.push(newSegment);
+  };
 
   // checks if snake ate the food
-  onSnakeEat();
-
-  for (let i = snakeBody.length - 1; i > 0; i--) {
-    snakeBody[i] = { ...snakeBody[i - 1] };
-  }
-
-  snakeBody[0].x += snakeDirection.x;
-  snakeBody[0].y += snakeDirection.y;
-}
-
-// draw snake and food on the screen
-export function drawSnake() {
-  // clear canvas to erase previous paint
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-  // draw food on the screen
-  // food color yellow
-  ctx.fillStyle = '#ffff00';
-  ctx.fillRect(food.x, food.y, food.width, food.height);
-
-  // draw snake
-  ctx.fillStyle = '#000000';
-  snakeBody.forEach((segment) => {
-    ctx.fillRect(
-      segment.x,
-      segment.y,
-      snakeSegmentSize.width,
-      snakeSegmentSize.height
-    );
-  });
-}
-
-// checks if the game is over
-// updates isGameOver flag variable
-function onGameOver() {
-  return isSnakeIntersected() || isBoundaryIntersected();
-}
-
-// check if snake head intersected to its body
-function isSnakeIntersected() {
-  return snakeBody.some((segment, idx) => {
-    if (idx !== 0) {
-      // snakeBody[0] is snake's head
-      if (segment.x === snakeBody[0].x && segment.y === snakeBody[0].y)
-        return true;
+  // if snake head positions is the same as food positions
+  // the food is eaten
+  this.onSnakeEat = function () {
+    // snakeBody[0] is snake's head
+    if (this.snakeBody[0].x === food.x && this.snakeBody[0].y === food.y) {
+      // add new snake segment to snake body/ tail
+      this.addSnakeSegment();
+      // generate new food
+      food.updateFood();
     }
-  });
-}
-
-// check if snake head intersected to the boundaries
-function isBoundaryIntersected() {
-  return false;
-}
-
-// update snake direction
-export function setSnakeDirection(direction) {
-  if (
-    direction !== 'right' &&
-    direction !== 'left' &&
-    direction !== 'up' &&
-    direction !== 'down'
-  )
-    return;
-
-  // update snakeDirection
-  switch (direction) {
-    case 'right':
-      if (snakeDirection.x !== -snakeSegmentSize.width) {
-        snakeDirection.x = snakeSegmentSize.width;
-        snakeDirection.y = 0;
-      }
-      break;
-    case 'left':
-      if (snakeDirection.x !== snakeSegmentSize.width) {
-        snakeDirection.x = -snakeSegmentSize.width;
-        snakeDirection.y = 0;
-      }
-      break;
-    case 'up':
-      if (snakeDirection.y !== snakeSegmentSize.height) {
-        snakeDirection.y = -snakeSegmentSize.height;
-        snakeDirection.x = 0;
-      }
-      break;
-    case 'down':
-      if (snakeDirection.y !== -snakeSegmentSize.height) {
-        snakeDirection.y = snakeSegmentSize.height;
-        snakeDirection.x = 0;
-      }
-      break;
-    default:
-      return undefined;
-  }
-}
-
-// returns snake last segment or the tail of the snake
-function getLastSnakeSegment() {
-  return snakeBody[snakeBody.length - 1];
-}
-
-function addSnakeSegment() {
-  // get last snake segment to know x position and y position
-  const lastSnakeSegment = getLastSnakeSegment();
-  const newSegment = {};
-
-  if (snakeDirection.x > 0) {
-    newSegment.x = lastSnakeSegment.x - snakeSegmentSize.width;
-    newSegment.y = snakeSegmentSize.y;
-  } else if (snakeDirection.x < 0) {
-    newSegment.x = lastSnakeSegment.x;
-    newSegment.y = snakeSegmentSize.y;
-  } else if (snakeDirection.y > 0) {
-    newSegment.x = snakeSegmentSize.x;
-    newSegment.y = lastSnakeSegment.y;
-  } else if (snakeDirection.y < 0) {
-    newSegment.x = lastSnakeSegment.x;
-    newSegment.y = lastSnakeSegment.y - snakeSegmentSize.height;
-  }
-
-  snakeBody.push(newSegment);
-}
-
-// checks if snake ate the food
-// if snake head positions is the same as food positions
-// the food is eaten
-function onSnakeEat() {
-  // snakeBody[0] is snake's head
-  if (snakeBody[0].x === food.x && snakeBody[0].y === food.y) {
-    // remove food on the canvas
-    ctx.clearRect(food.x, food.y, food.width, food.height);
-    // add new snake segment to snake body/ tail
-    addSnakeSegment();
-    // generate new food
-    generateFood();
-  }
+  };
 }

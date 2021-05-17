@@ -1,33 +1,40 @@
-import { snakeBody } from './snake.js';
-import { boxSize, canvasWidth, canvasHeight } from './canvas.js';
+function Food() {
+  // food color
+  this.color = '#ffff00';
 
-// food x, y position, width, and height
-export const food = {
-  x: 100,
-  y: 100,
-  width: 20,
-  height: 20,
-};
+  // food x, y position, width, and height
+  this.x = 100;
+  this.y = 100;
+  this.width = 20;
+  this.height = 20;
 
-export function generateFood() {
-  let randX, randY, randomXPos, randomYPos;
+  this.updateFood = function () {
+    let randX, randY, randomXPos, randomYPos;
 
-  while (true) {
-    randX = Math.floor(Math.random() * (canvasWidth / boxSize));
-    randY = Math.floor(Math.random() * (canvasHeight / boxSize));
+    while (true) {
+      randX = Math.floor(Math.random() * (canvasWidth / boxSize));
+      randY = Math.floor(Math.random() * (canvasHeight / boxSize));
 
-    randomXPos = randX % 2 !== 0 ? (randX - 1) * 10 : randX * 10;
-    randomYPos = randY % 2 !== 0 ? (randY - 1) * 10 : randY * 10;
+      randomXPos = randX % 2 !== 0 ? (randX - 1) * 10 : randX * 10;
+      randomYPos = randY % 2 !== 0 ? (randY - 1) * 10 : randY * 10;
 
-    if (!isInsideSnake(randomXPos, randomYPos)) break;
-  }
+      if (!this.isInsideSnake(randomXPos, randomYPos)) break;
+    }
 
-  food.x = randomXPos;
-  food.y = randomYPos;
-}
+    this.x = randomXPos;
+    this.y = randomYPos;
+  };
 
-function isInsideSnake(x, y) {
-  return snakeBody.some((segment) => {
-    return segment.x === x && segment.y === y;
-  });
+  this.drawFood = function () {
+    // draw food on the screen
+    // food color yellow
+    ctx.fillStyle = food.color;
+    ctx.fillRect(food.x, food.y, food.width, food.height);
+  };
+
+  this.isInsideSnake = function (x, y) {
+    return snake.snakeBody.some((segment) => {
+      return segment.x === x && segment.y === y;
+    });
+  };
 }
