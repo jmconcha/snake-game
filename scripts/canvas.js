@@ -6,7 +6,3 @@ gameBoard.height = canvasHeight;
 const ctx = gameBoard.getContext('2d');
 // boxSize is the size of each box inside the canvas
 const boxSize = 20;
-
-gameBoard.addEventListener('click', () => {
-  snake.addSnakeSegment();
-});
