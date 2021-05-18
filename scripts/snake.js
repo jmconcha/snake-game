@@ -17,7 +17,12 @@ function Snake() {
   };
 
   // snake direction
-  this.snakeDirection = {
+  this.snakePrevDirection = {
+    x: 0,
+    y: 0,
+  };
+  // snake direction
+  this.snakeCurrDirection = {
     x: 0,
     y: 0,
   };
@@ -31,17 +36,35 @@ function Snake() {
       this.snakeBody[i] = { ...this.snakeBody[i - 1] };
     }
 
-    // update snake position
-    this.snakeBody[0].x += this.snakeDirection.x;
-    this.snakeBody[0].y += this.snakeDirection.y;
+    // prevents snake from going backwards
+    if (
+      (this.snakePrevDirection.x > 0 &&
+        this.snakeCurrDirection.x === -this.snakeSegmentSize.width) ||
+      (this.snakePrevDirection.x < 0 &&
+        this.snakeCurrDirection.x === this.snakeSegmentSize.width) ||
+      (this.snakePrevDirection.y > 0 &&
+        this.snakeCurrDirection.y === -this.snakeSegmentSize.width) ||
+      (this.snakePrevDirection.y < 0 &&
+        this.snakeCurrDirection.y === this.snakeSegmentSize.width)
+    ) {
+      // updates snake direction using snake prevous direction
+      // and not the snake current direction
+      // input by user
+      // to prevent snake going backwards
+      this.snakeBody[0].x += this.snakePrevDirection.x;
+      this.snakeBody[0].y += this.snakePrevDirection.y;
+    } else {
+      // update snake position
+      this.snakeBody[0].x += this.snakeCurrDirection.x;
+      this.snakeBody[0].y += this.snakeCurrDirection.y;
+      // update snake previous direction with the snake current direction
+      this.snakePrevDirection.x = this.snakeCurrDirection.x;
+      this.snakePrevDirection.y = this.snakeCurrDirection.y;
+    }
   };
 
-  // draw snake and food on the screen
+  // draw snake on the screen
   this.drawSnake = function () {
-    // doesn't draw if game over
-    if (this.isGameOver) alert('gameover');
-
-    // draw snake
     ctx.fillStyle = this.color;
     this.snakeBody.forEach((segment) => {
       ctx.fillRect(
@@ -94,31 +117,23 @@ function Snake() {
     )
       return;
 
-    // update snakeDirection
+    // update snakeCurrDirection
     switch (direction) {
       case 'right':
-        if (this.snakeDirection.x !== -this.snakeSegmentSize.width) {
-          this.snakeDirection.x = this.snakeSegmentSize.width;
-          this.snakeDirection.y = 0;
-        }
+        this.snakeCurrDirection.x = this.snakeSegmentSize.width;
+        this.snakeCurrDirection.y = 0;
         break;
       case 'left':
-        if (this.snakeDirection.x !== this.snakeSegmentSize.width) {
-          this.snakeDirection.x = -this.snakeSegmentSize.width;
-          this.snakeDirection.y = 0;
-        }
+        this.snakeCurrDirection.x = -this.snakeSegmentSize.width;
+        this.snakeCurrDirection.y = 0;
         break;
       case 'up':
-        if (this.snakeDirection.y !== this.snakeSegmentSize.height) {
-          this.snakeDirection.y = -this.snakeSegmentSize.height;
-          this.snakeDirection.x = 0;
-        }
+        this.snakeCurrDirection.y = -this.snakeSegmentSize.height;
+        this.snakeCurrDirection.x = 0;
         break;
       case 'down':
-        if (this.snakeDirection.y !== -this.snakeSegmentSize.height) {
-          this.snakeDirection.y = this.snakeSegmentSize.height;
-          this.snakeDirection.x = 0;
-        }
+        this.snakeCurrDirection.y = this.snakeSegmentSize.height;
+        this.snakeCurrDirection.x = 0;
         break;
       default:
         return undefined;
@@ -135,16 +150,16 @@ function Snake() {
     const lastSnakeSegment = this.getLastSnakeSegment();
     const newSegment = {};
 
-    if (this.snakeDirection.x > 0) {
+    if (this.snakeCurrDirection.x > 0) {
       newSegment.x = lastSnakeSegment.x - this.snakeSegmentSize.width;
       newSegment.y = this.snakeSegmentSize.y;
-    } else if (this.snakeDirection.x < 0) {
+    } else if (this.snakeCurrDirection.x < 0) {
       newSegment.x = lastSnakeSegment.x;
       newSegment.y = this.snakeSegmentSize.y;
-    } else if (this.snakeDirection.y > 0) {
+    } else if (this.snakeCurrDirection.y > 0) {
       newSegment.x = this.snakeSegmentSize.x;
       newSegment.y = lastSnakeSegment.y;
-    } else if (this.snakeDirection.y < 0) {
+    } else if (this.snakeCurrDirection.y < 0) {
       newSegment.x = lastSnakeSegment.x;
       newSegment.y = lastSnakeSegment.y + this.snakeSegmentSize.height;
     }

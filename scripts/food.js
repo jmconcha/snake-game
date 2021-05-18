@@ -26,8 +26,8 @@ function Food() {
     this.y = randomYPos;
   };
 
+  // draw food on the screen
   this.drawFood = function () {
-    // draw food on the screen
     // food color yellow
     ctx.fillStyle = food.color;
     ctx.fillRect(food.x, food.y, food.width, food.height);
