@@ -6,8 +6,8 @@ function Food() {
   this.x = 100;
   this.y = 100;
   // food width, and height
-  this.width = 20;
-  this.height = 20;
+  this.width = 10;
+  this.height = 10;
 
   this.updateFood = function () {
     let randX, randY, randomXPos, randomYPos;

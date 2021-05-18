@@ -12,8 +12,8 @@ function Snake() {
 
   // width and height of snake segments/parts
   this.snakeSegmentSize = {
-    width: 20,
-    height: 20,
+    width: 10,
+    height: 10,
   };
 
   // snake direction

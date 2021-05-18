@@ -1,6 +1,6 @@
 // how many render per second
 // this will be the snake speed
-const renderPerSec = 2;
+const renderPerSec = 10;
 // last render timestamp
 let lastRenderTime = 0;
 
@@ -27,11 +27,16 @@ function main(currentTime) {
   // controls how many render per sec
   if (lastRenderMS < 1 / renderPerSec) return;
 
+  // update snake first before clearing the canvas and painting snake and food
+  snake.updateSnake();
+
+  // stop painting if the game is already over
+  if (isGameOver()) return;
+
   // clear canvas to erase previous paint
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
   food.drawFood();
-  snake.updateSnake();
   snake.drawSnake();
 
   lastRenderTime = currentTime;
