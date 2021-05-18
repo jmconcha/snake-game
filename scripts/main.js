@@ -19,7 +19,13 @@ function main(currentTime) {
     window.requestAnimationFrame(main);
   } else {
     // stop the game, stop drawing on the canvas
-    console.log('game over');
+    // ask user to play again
+    let userResponse = confirm('Game Over! Click OK to play again.');
+
+    if (userResponse) {
+      // refresh page
+      window.location.reload();
+    }
   }
 
   // milliseconds since last render
